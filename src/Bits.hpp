@@ -52,6 +52,6 @@ namespace Tier0::Bits
 	template <typename Value>
 	uint32_t Flip(Value value, uint8_t index)
 	{
-		return Set(value, index, !IsSet(value, index));
+		return value ^ Mask<Value>(index);
 	}
 }
