@@ -33,7 +33,8 @@ TEST(Bits, Mask)
 {
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
-		EXPECT_EQ(Bits::Mask<Value>(i), 1u << i);
+		auto bitset = GetBitset(i);
+		EXPECT_EQ(Bits::Mask<Value>(i), bitset.to_ullong());
 	}
 }
 

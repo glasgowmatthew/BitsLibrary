@@ -22,7 +22,7 @@ namespace Tier0::Bits
 	template <typename Value>
 	bool IsClear(Value value, uint8_t index)
 	{
-		return !IsSet(value, index);
+		return !IsSet<Value>(value, index);
 	}
 
 	template <typename Value>
