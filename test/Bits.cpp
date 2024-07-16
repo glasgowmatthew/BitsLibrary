@@ -68,7 +68,7 @@ TEST(Bits, Set)
 	}
 }
 
-TEST(Bits, Unset)
+TEST(Bits, Clear)
 {
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
