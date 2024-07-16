@@ -44,7 +44,7 @@ TEST(Bits, IsClear)
 	{
 		auto bit = GetBitset(i);
 		EXPECT_TRUE(Bits::IsClear<Value>(~bit.to_ullong(), i));
-		EXPECT_FALSE(Bits::IsClear<Value>(~bit.to_ullong(), i));
+		EXPECT_FALSE(Bits::IsClear<Value>(bit.to_ullong(), i));
 	}
 }
 
