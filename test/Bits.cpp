@@ -73,9 +73,9 @@ TEST(Bits, Unset)
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
 		auto bitset = GetBitset(i);
-		EXPECT_EQ(Bits::Clear<Value>(bitset.to_ullong(), i), 0u) << i << ":" << bitset;
+		EXPECT_EQ(Bits::Clear<Value>(bitset.to_ullong(), i), 0u);
 		bitset.flip();
-		EXPECT_EQ(Bits::Clear<Value>(bitset.to_ullong(), i), bitset.to_ullong()) << i << ":" << bitset;
+		EXPECT_EQ(Bits::Clear<Value>(bitset.to_ullong(), i), bitset.to_ullong());
 	}
 }
 
@@ -84,7 +84,7 @@ TEST(Bits, Flip)
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
 		auto bitset = GetBitset(i);
-		EXPECT_EQ(Bits::Flip<Value>(0u, i), bitset.to_ullong()) << i << ":" << bitset;
-		EXPECT_EQ(Bits::Flip<Value>(bitset.to_ullong(), i), 0u) << i << ":" << bitset;
+		EXPECT_EQ(Bits::Flip<Value>(0u, i), bitset.to_ullong());
+		EXPECT_EQ(Bits::Flip<Value>(bitset.to_ullong(), i), 0u);
 	}
 }
