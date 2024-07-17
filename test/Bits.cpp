@@ -8,6 +8,7 @@
 #include "Bits.hpp"
 
 #include <bitset>
+#include <random>
 
 #include <gtest/gtest.h>
 
@@ -17,12 +18,15 @@ using namespace Tier0;
 
 using Value = uint32_t;
 static const uint8_t sc_Size = 32;
+using Bitset = std::bitset<sc_Size>;
+
+static const uint8_t sc_TestCount = 100;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static std::bitset<sc_Size> GetBitset(uint8_t index, uint8_t size = 1)
+static Bitset GetBitset(uint8_t index, uint8_t size = 1)
 {
-	std::bitset<sc_Size> bitset;
+	Bitset bitset;
 	for (uint8_t i = 0; i < size; i++)
 	{
 		bitset[index + i] = true;
@@ -30,7 +34,43 @@ static std::bitset<sc_Size> GetBitset(uint8_t index, uint8_t size = 1)
 	return bitset;
 }
 
+static Value BitsetGetAt(Value value, uint8_t index, uint8_t size)
+{
+	Bitset bits(value);
+	bits >>= index;
+	for (uint8_t i = size; i < bits.size(); i++)
+	{
+		bits[i] = false;
+	}
+	return static_cast<Value>(bits.to_ullong());
+}
+
+static Value SetBitsetAt(Value value, uint8_t index, uint8_t size, Value subValue)
+{
+	Bitset bits(value);
+	Bitset subBits(subValue);
+	for (uint8_t i = 0; i < size; i++)
+	{
+		bits[index + i] = subBits[i];
+	}
+	return static_cast<Value>(bits.to_ullong());
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+TEST(Bits, GetBitset)
+{
+	for (uint8_t i = 0; i < sc_Size; i++)
+	{
+		auto bit = GetBitset(i);
+		EXPECT_EQ(bit.to_ullong(), 1u << i);
+	}
+	for (uint8_t i = 0; i < sc_Size - 1; i++)
+	{
+		auto bit = GetBitset(i, 2);
+		EXPECT_EQ(bit.to_ullong(), 3u << i);
+	}
+}
 
 TEST(Bits, Mask)
 {
@@ -155,5 +195,32 @@ TEST(Bits, Flip)
 			EXPECT_EQ(Bits::Flip<Value>(0u, i, j), bits.to_ullong());
 			EXPECT_EQ(Bits::Flip<Value>(bits.to_ullong(), i, j), 0u);
 		}
+	}
+}
+
+TEST(Bits, GetAt)
+{
+	std::mt19937 gen32;
+
+	for (uint8_t i = 0; i < sc_TestCount; i++)
+	{
+		Value value = gen32();
+		uint8_t index = std::uniform_int_distribution<>(0, 31)(gen32);
+		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
+		EXPECT_EQ(Bits::GetAt(value, index, size), BitsetGetAt(value, index, size));
+	}
+}
+
+TEST(Bits, SetAt)
+{
+	std::mt19937 gen32;
+
+	for (uint8_t i = 0; i < sc_TestCount; i++)
+	{
+		Value value = gen32();
+		uint8_t index = std::uniform_int_distribution<>(0, 31)(gen32);
+		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
+		Value subValue = gen32();
+		EXPECT_EQ(Bits::SetAt(value, index, size, subValue), SetBitsetAt(value, index, size, subValue));
 	}
 }
