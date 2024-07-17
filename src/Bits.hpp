@@ -79,4 +79,19 @@ namespace Tier0::Bits
 	{
 		return value ^ Mask<Value>(index, size);
 	}
+
+	template <typename Value>
+	Value GetAt(Value value, uint8_t index, uint8_t size)
+	{
+		const auto mask = Mask<Value>(index, size);
+		return (value & mask) >> index;
+	}
+
+	template <typename Value>
+	Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
+	{
+		const auto mask = Mask<Value>(index, size);
+		subValue = subValue << index;
+		return (value & ~mask) | (subValue & mask);
+	}
 }
