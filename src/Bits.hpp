@@ -63,19 +63,19 @@ namespace Tier0::Bits
 	}
 
 	template <typename Value>
-	uint32_t Clear(Value value, uint8_t index, uint8_t size = 1)
+	Value Clear(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value & ~Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	uint32_t Set(Value value, uint8_t index, uint8_t size = 1)
+	Value Set(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value | Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	uint32_t Flip(Value value, uint8_t index, uint8_t size = 1)
+	Value Flip(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value ^ Mask<Value>(index, size);
 	}
