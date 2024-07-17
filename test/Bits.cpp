@@ -37,12 +37,12 @@ TEST(Bits, Mask)
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
 		auto bit = GetBitset(i);
-		EXPECT_EQ(Bits::Mask<Value>(i), bit.to_ullong());
+		EXPECT_EQ(Bits::Mask<Value>(i), bit.to_ullong()) << std::to_string(i);
 
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
-			EXPECT_EQ(Bits::Mask<Value>(i, j), bits.to_ullong());
+			EXPECT_EQ(Bits::Mask<Value>(i, j), bits.to_ullong()) << std::to_string(i);
 		}
 	}
 }
@@ -51,7 +51,7 @@ TEST(Bits, MaskUpTo)
 {
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
-		auto bits = GetBitset(0, i);
+		auto bits = GetBitset(0, i + 1);
 		EXPECT_EQ(Bits::MaskUpTo<Value>(i), bits.to_ullong());
 	}
 }
@@ -69,7 +69,7 @@ TEST(Bits, IsAllSet)
 			auto bits = GetBitset(i, j);
 			EXPECT_TRUE(Bits::IsAllSet<Value>(bits.to_ullong(), i, j));
 			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits.to_ullong(), 0, i));
-			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits.to_ullong(), j, sc_Size - j));
+			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits.to_ullong(), i + j, sc_Size - i - j));
 		}
 	}
 }
@@ -100,7 +100,7 @@ TEST(Bits, IsNoneSet)
 			auto bits = GetBitset(i, j);
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(~bits.to_ullong(), i, j));
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits.to_ullong(), 0, i));
-			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits.to_ullong(), j, sc_Size - j));
+			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits.to_ullong(), i + j, sc_Size - i - j));
 		}
 	}
 }
