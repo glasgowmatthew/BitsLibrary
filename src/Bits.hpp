@@ -39,18 +39,6 @@ namespace Tier0::Bits
 	}
 
 	template <typename Value>
-	bool IsClear(Value value, uint8_t index)
-	{
-		return !IsSet<Value>(value, index);
-	}
-
-	template <typename Value>
-	bool IsSet(Value value, uint8_t index)
-	{
-		return value & Mask<Value>(index);
-	}
-
-	template <typename Value>
 	bool IsAllSet(Value value, uint8_t index, uint8_t size)
 	{
 		const auto mask = Mask<Value>(index, size);
@@ -72,39 +60,15 @@ namespace Tier0::Bits
 	}
 
 	template <typename Value>
-	uint32_t Clear(Value value, uint8_t index)
-	{
-		return value & ~Mask<Value>(index);
-	}
-
-	template <typename Value>
 	uint32_t Clear(Value value, uint8_t index, uint8_t size)
 	{
 		return value & ~Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	uint32_t Set(Value value, uint8_t index)
-	{
-		return value | Mask<Value>(index);
-	}
-
-	template <typename Value>
 	uint32_t Set(Value value, uint8_t index, uint8_t size)
 	{
 		return value | Mask<Value>(index, size);
-	}
-
-	template <typename Value>
-	uint32_t Set(Value value, uint8_t index, bool set)
-	{
-		return set ? Set(value, index) : Clear(value, index);
-	}
-
-	template <typename Value>
-	uint32_t Flip(Value value, uint8_t index)
-	{
-		return value ^ Mask<Value>(index);
 	}
 
 	template <typename Value>

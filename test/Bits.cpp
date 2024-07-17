@@ -56,30 +56,14 @@ TEST(Bits, MaskUpTo)
 	}
 }
 
-TEST(Bits, IsClear)
-{
-	for (uint8_t i = 0; i < sc_Size; i++)
-	{
-		auto bit = GetBitset(i);
-		EXPECT_TRUE(Bits::IsClear<Value>(~bit.to_ullong(), i));
-		EXPECT_FALSE(Bits::IsClear<Value>(bit.to_ullong(), i));
-	}
-}
-
-TEST(Bits, IsSet)
-{
-	for (uint8_t i = 0; i < sc_Size; i++)
-	{
-		auto bit = GetBitset(i);
-		EXPECT_TRUE(Bits::IsSet<Value>(bit.to_ullong(), i));
-		EXPECT_FALSE(Bits::IsSet<Value>(~bit.to_ullong(), i));
-	}
-}
-
 TEST(Bits, IsAllSet)
 {
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
+		auto bit = GetBitset(i);
+		EXPECT_TRUE(Bits::IsAllSet<Value>(bit.to_ullong(), i));
+		EXPECT_FALSE(Bits::IsAllSet<Value>(~bit.to_ullong(), i));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
@@ -107,6 +91,10 @@ TEST(Bits, IsNoneSet)
 {
 	for (uint8_t i = 0; i < sc_Size; i++)
 	{
+		auto bit = GetBitset(i);
+		EXPECT_TRUE(Bits::IsNoneSet<Value>(~bit.to_ullong(), i));
+		EXPECT_FALSE(Bits::IsNoneSet<Value>(bit.to_ullong(), i));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
