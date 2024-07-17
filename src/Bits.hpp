@@ -8,101 +8,74 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace Tier0::Bits
 {
 	template <typename Value>
-	Value Mask(uint8_t index)
+	uint8_t BitCount()
 	{
-		return 1u << index;
+		return sizeof(Value) * 8;
 	}
 
 	template <typename Value>
 	Value MaskUpTo(uint8_t index)
 	{
-		return (1u << index) - 1;
+		return std::numeric_limits<Value>::max() >> (BitCount<Value>() - 1 - index);
 	}
 
 	template <typename Value>
-	Value Mask(uint8_t index, uint8_t size)
+	Value Mask(uint8_t index, uint8_t size = 1)
 	{
+		if (size == 0)
+		{
+			return 0;
+		}
+		Value value = MaskUpTo<Value>(index + size - 1);
 		if (index == 0)
 		{
-			return MaskUpTo<Value>(size);
+			return value;
 		}
-		else
-		{
-			return MaskUpTo<Value>(index + size) & ~MaskUpTo<Value>(index);
-		}
+		return value & ~MaskUpTo<Value>(index - 1);
 	}
 
 	template <typename Value>
-	bool IsClear(Value value, uint8_t index)
-	{
-		return !IsSet<Value>(value, index);
-	}
-
-	template <typename Value>
-	bool IsSet(Value value, uint8_t index)
-	{
-		return value & Mask<Value>(index);
-	}
-
-	template <typename Value>
-	bool IsAllSet(Value value, uint8_t index, uint8_t size)
+	bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) == mask;
 	}
 
 	template <typename Value>
-	bool IsAnySet(Value value, uint8_t index, uint8_t size)
+	bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) != 0;
 	}
 
 	template <typename Value>
-	bool IsNoneSet(Value value, uint8_t index, uint8_t size)
+	bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) == 0;
 	}
 
 	template <typename Value>
-	uint32_t Clear(Value value, uint8_t index)
-	{
-		return value & ~Mask<Value>(index);
-	}
-
-	template <typename Value>
-	Value Clear(Value value, uint8_t index, uint8_t size)
+	Value Clear(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value & ~Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	Value Set(Value value, uint8_t index)
-	{
-		return value | Mask<Value>(index);
-	}
-
-	template <typename Value>
-	Value Set(Value value, uint8_t index, uint8_t size)
+	Value Set(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value | Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	Value Flip(Value value, uint8_t index)
-	{
-		return value ^ Mask<Value>(index);
-	}
-
-	template <typename Value>
-	Value Flip(Value value, uint8_t index, uint8_t size)
+	Value Flip(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value ^ Mask<Value>(index, size);
 	}
