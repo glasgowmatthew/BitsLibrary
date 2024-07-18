@@ -132,4 +132,58 @@ namespace Tier0::Bits
 	private:
 		uint8_t m_Index;
 	};
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
+	template <typename Value>
+	class Range
+	{
+	public:
+		Range(uint8_t index, uint8_t size) :
+			m_Index(index), m_Size(size) {}
+
+		bool IsAllSet(Value value) const
+		{
+			return Bits::IsAllSet<Value>(value, m_Index, m_Size);
+		}
+
+		bool IsAnySet(Value value) const
+		{
+			return Bits::IsAnySet<Value>(value, m_Index, m_Size);
+		}
+
+		bool IsNoneSet(Value value) const
+		{
+			return Bits::IsNoneSet<Value>(value, m_Index, m_Size);
+		}
+
+		Value Set(Value value) const
+		{
+			return Bits::Set(value, m_Index, m_Size);
+		}
+
+		Value Clear(Value value) const
+		{
+			return Bits::Clear(value, m_Index, m_Size);
+		}
+
+		Value Flip(Value value) const
+		{
+			return Bits::Flip(value, m_Index, m_Size);
+		}
+
+		Value GetAt(Value value) const
+		{
+			return Bits::GetAt(value, m_Index, m_Size);
+		}
+
+		Value SetAt(Value value, Value subValue) const
+		{
+			return Bits::SetAt(value, m_Index, m_Size, subValue);
+		}
+
+	private:
+		uint8_t m_Index;
+		uint8_t m_Size;
+	};
 }

@@ -114,6 +114,9 @@ TEST(Bits, IsAllSet)
 			EXPECT_TRUE(Bits::IsAllSet<Value>(bits.to_ullong(), i, j));
 			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits.to_ullong(), 0, i));
 			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits.to_ullong(), i + j, sc_Size - i - j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsAllSet(bits.to_ullong()));
 		}
 	}
 }
@@ -127,6 +130,9 @@ TEST(Bits, IsAnySet)
 		for (uint8_t j = 1; i + j < sc_Size; j++)
 		{
 			EXPECT_TRUE(Bits::IsAnySet<Value>(bits.to_ullong(), i, j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsAnySet(bits.to_ullong()));
 		}
 	}
 }
@@ -149,6 +155,9 @@ TEST(Bits, IsNoneSet)
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(~bits.to_ullong(), i, j));
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits.to_ullong(), 0, i));
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits.to_ullong(), i + j, sc_Size - i - j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsNoneSet(~bits.to_ullong()));
 		}
 	}
 }
@@ -170,6 +179,10 @@ TEST(Bits, Set)
 			auto bits = GetBitset(i, j);
 			EXPECT_EQ(Bits::Set<Value>(0u, i, j), bits.to_ullong());
 			EXPECT_EQ(Bits::Set<Value>(bits.to_ullong(), i, j), bits.to_ullong());
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Set(0u), bits.to_ullong());
+			EXPECT_EQ(bitRange.Set(bits.to_ullong()), bits.to_ullong());
 		}
 	}
 }
@@ -196,6 +209,13 @@ TEST(Bits, Clear)
 			EXPECT_EQ(Bits::Clear<Value>(bits.to_ullong(), i, j), 0u);
 			bits.flip();
 			EXPECT_EQ(Bits::Clear<Value>(bits.to_ullong(), i, j), bits.to_ullong());
+			bits.flip();
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Clear(bits.to_ullong()), 0u);
+			bits.flip();
+			EXPECT_EQ(bitRange.Clear(bits.to_ullong()), bits.to_ullong());
+			bits.flip();
 		}
 	}
 }
@@ -217,6 +237,10 @@ TEST(Bits, Flip)
 			auto bits = GetBitset(i, j);
 			EXPECT_EQ(Bits::Flip<Value>(0u, i, j), bits.to_ullong());
 			EXPECT_EQ(Bits::Flip<Value>(bits.to_ullong(), i, j), 0u);
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Flip(0u), bits.to_ullong());
+			EXPECT_EQ(bitRange.Flip(bits.to_ullong()), 0u);
 		}
 	}
 }
@@ -231,6 +255,9 @@ TEST(Bits, GetAt)
 		uint8_t index = std::uniform_int_distribution<>(0, 31)(gen32);
 		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
 		EXPECT_EQ(Bits::GetAt(value, index, size), BitsetGetAt(value, index, size));
+
+		Bits::Range<Value> bitRange(index, size);
+		EXPECT_EQ(bitRange.GetAt(value), BitsetGetAt(value, index, size));
 	}
 }
 
@@ -245,5 +272,8 @@ TEST(Bits, SetAt)
 		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
 		Value subValue = gen32();
 		EXPECT_EQ(Bits::SetAt(value, index, size, subValue), SetBitsetAt(value, index, size, subValue));
+
+		Bits::Range<Value> bitRange(index, size);
+		EXPECT_EQ(bitRange.SetAt(value, subValue), SetBitsetAt(value, index, size, subValue));
 	}
 }
