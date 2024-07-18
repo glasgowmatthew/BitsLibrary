@@ -104,6 +104,10 @@ TEST(Bits, IsAllSet)
 		EXPECT_TRUE(Bits::IsAllSet<Value>(bit.to_ullong(), i));
 		EXPECT_FALSE(Bits::IsAllSet<Value>(~bit.to_ullong(), i));
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_TRUE(bitIndex.IsSet(bit.to_ullong()));
+		EXPECT_FALSE(bitIndex.IsSet(~bit.to_ullong()));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
@@ -135,6 +139,10 @@ TEST(Bits, IsNoneSet)
 		EXPECT_TRUE(Bits::IsNoneSet<Value>(~bit.to_ullong(), i));
 		EXPECT_FALSE(Bits::IsNoneSet<Value>(bit.to_ullong(), i));
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_TRUE(bitIndex.IsClear(~bit.to_ullong()));
+		EXPECT_FALSE(bitIndex.IsClear(bit.to_ullong()));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
@@ -153,6 +161,10 @@ TEST(Bits, Set)
 		EXPECT_EQ(Bits::Set<Value>(0u, i), bit.to_ullong());
 		EXPECT_EQ(Bits::Set<Value>(bit.to_ullong(), i), bit.to_ullong());
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Set(0u), bit.to_ullong());
+		EXPECT_EQ(bitIndex.Set(bit.to_ullong()), bit.to_ullong());
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
@@ -170,6 +182,13 @@ TEST(Bits, Clear)
 		EXPECT_EQ(Bits::Clear<Value>(bit.to_ullong(), i), 0u);
 		bit.flip();
 		EXPECT_EQ(Bits::Clear<Value>(bit.to_ullong(), i), bit.to_ullong());
+		bit.flip();
+
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Clear(bit.to_ullong()), 0u);
+		bit.flip();
+		EXPECT_EQ(bitIndex.Clear(bit.to_ullong()), bit.to_ullong());
+		bit.flip();
 
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
@@ -188,6 +207,10 @@ TEST(Bits, Flip)
 		auto bit = GetBitset(i);
 		EXPECT_EQ(Bits::Flip<Value>(0u, i), bit.to_ullong());
 		EXPECT_EQ(Bits::Flip<Value>(bit.to_ullong(), i), 0u);
+
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Flip(0u), bit.to_ullong());
+		EXPECT_EQ(bitIndex.Flip(bit.to_ullong()), 0u);
 
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
