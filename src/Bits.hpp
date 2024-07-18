@@ -94,4 +94,42 @@ namespace Tier0::Bits
 		subValue = subValue << index;
 		return (value & ~mask) | (subValue & mask);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
+	template <typename Value>
+	class Index
+	{
+	public:
+		Index(uint8_t index) :
+			m_Index(index) {}
+
+		bool IsSet(Value value)
+		{
+			return Bits::IsAllSet<Value>(value, m_Index);
+		}
+
+		bool IsClear(Value value)
+		{
+			return Bits::IsNoneSet<Value>(value, m_Index);
+		}
+
+		Value Set(Value value)
+		{
+			return Bits::Set(value, m_Index);
+		}
+
+		Value Clear(Value value)
+		{
+			return Bits::Clear(value, m_Index);
+		}
+
+		Value Flip(Value value)
+		{
+			return Bits::Flip(value, m_Index);
+		}
+
+	private:
+		uint8_t m_Index;
+	};
 }
