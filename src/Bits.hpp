@@ -104,27 +104,27 @@ namespace Tier0::Bits
 		Index(uint8_t index) :
 			m_Index(index) {}
 
-		bool IsSet(Value value)
+		bool IsSet(Value value) const
 		{
 			return Bits::IsAllSet<Value>(value, m_Index);
 		}
 
-		bool IsClear(Value value)
+		bool IsClear(Value value) const
 		{
 			return Bits::IsNoneSet<Value>(value, m_Index);
 		}
 
-		Value Set(Value value)
+		Value Set(Value value) const
 		{
 			return Bits::Set(value, m_Index);
 		}
 
-		Value Clear(Value value)
+		Value Clear(Value value) const
 		{
 			return Bits::Clear(value, m_Index);
 		}
 
-		Value Flip(Value value)
+		Value Flip(Value value) const
 		{
 			return Bits::Flip(value, m_Index);
 		}
