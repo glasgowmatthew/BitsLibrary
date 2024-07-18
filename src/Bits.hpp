@@ -15,19 +15,19 @@
 namespace Tier0::Bits
 {
 	template <typename Value>
-	uint8_t BitCount()
+	constexpr uint8_t BitCount()
 	{
 		return sizeof(Value) * 8;
 	}
 
 	template <typename Value>
-	Value MaskUpTo(uint8_t index)
+	constexpr Value MaskUpTo(uint8_t index)
 	{
 		return std::numeric_limits<Value>::max() >> (BitCount<Value>() - 1 - index);
 	}
 
 	template <typename Value>
-	Value Mask(uint8_t index, uint8_t size = 1)
+	constexpr Value Mask(uint8_t index, uint8_t size = 1)
 	{
 		if (size == 0)
 		{
@@ -42,53 +42,53 @@ namespace Tier0::Bits
 	}
 
 	template <typename Value>
-	bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
+	constexpr bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) == mask;
 	}
 
 	template <typename Value>
-	bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
+	constexpr bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) != 0;
 	}
 
 	template <typename Value>
-	bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
+	constexpr bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) == 0;
 	}
 
 	template <typename Value>
-	Value Clear(Value value, uint8_t index, uint8_t size = 1)
+	constexpr Value Clear(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value & ~Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	Value Set(Value value, uint8_t index, uint8_t size = 1)
+	constexpr Value Set(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value | Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	Value Flip(Value value, uint8_t index, uint8_t size = 1)
+	constexpr Value Flip(Value value, uint8_t index, uint8_t size = 1)
 	{
 		return value ^ Mask<Value>(index, size);
 	}
 
 	template <typename Value>
-	Value GetAt(Value value, uint8_t index, uint8_t size)
+	constexpr Value GetAt(Value value, uint8_t index, uint8_t size)
 	{
 		const auto mask = Mask<Value>(index, size);
 		return (value & mask) >> index;
 	}
 
 	template <typename Value>
-	Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
+	constexpr Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
 	{
 		const auto mask = Mask<Value>(index, size);
 		subValue = subValue << index;
