@@ -193,29 +193,21 @@ TEST(Bits, Clear)
 	{
 		auto bit = GetBitset(i);
 		EXPECT_EQ(Bits::Clear<Value>(bit.to_ullong(), i), 0u);
-		bit.flip();
-		EXPECT_EQ(Bits::Clear<Value>(bit.to_ullong(), i), bit.to_ullong());
-		bit.flip();
+		EXPECT_EQ(Bits::Clear<Value>(~bit.to_ullong(), i), static_cast<Value>(~bit.to_ullong()));
 
 		Bits::Index<Value> bitIndex(i);
 		EXPECT_EQ(bitIndex.Clear(bit.to_ullong()), 0u);
-		bit.flip();
-		EXPECT_EQ(bitIndex.Clear(bit.to_ullong()), bit.to_ullong());
-		bit.flip();
+		EXPECT_EQ(bitIndex.Clear(~bit.to_ullong()), static_cast<Value>(~bit.to_ullong()));
 
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBitset(i, j);
 			EXPECT_EQ(Bits::Clear<Value>(bits.to_ullong(), i, j), 0u);
-			bits.flip();
-			EXPECT_EQ(Bits::Clear<Value>(bits.to_ullong(), i, j), bits.to_ullong());
-			bits.flip();
+			EXPECT_EQ(Bits::Clear<Value>(~bits.to_ullong(), i, j), static_cast<Value>(~bits.to_ullong()));
 
 			Bits::Range<Value> bitRange(i, j);
 			EXPECT_EQ(bitRange.Clear(bits.to_ullong()), 0u);
-			bits.flip();
-			EXPECT_EQ(bitRange.Clear(bits.to_ullong()), bits.to_ullong());
-			bits.flip();
+			EXPECT_EQ(bitRange.Clear(~bits.to_ullong()), static_cast<Value>(~bits.to_ullong()));
 		}
 	}
 }
