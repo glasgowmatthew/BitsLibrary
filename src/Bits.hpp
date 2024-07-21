@@ -101,7 +101,7 @@ namespace Tier0::Bits
 
 		bool IsClear(Value value) const
 		{
-			return m_Range.IsNoneSet<Value>(value);
+			return m_Range.IsNoneSet(value);
 		}
 
 		Value Set(Value value) const
@@ -120,7 +120,7 @@ namespace Tier0::Bits
 		}
 
 	private:
-		Range m_Range;
+		Range<Value> m_Range;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
