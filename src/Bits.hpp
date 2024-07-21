@@ -35,7 +35,7 @@ namespace Tier0::Bits
 		Range(uint8_t index, uint8_t size) :
 			m_Index(index),
 			m_Size(size),
-			m_Mask(CalculateMask<Value>(m_Index, m_Size)) {}
+			m_Mask(CalculateMask(m_Index, m_Size)) {}
 
 		Value GetMask() const
 		{
@@ -89,7 +89,6 @@ namespace Tier0::Bits
 		uint8_t m_Size;
 		Value m_Mask;
 
-		template <typename Value>
 		constexpr Value CalculateMask(uint8_t index, uint8_t size = 1)
 		{
 			if (size == 0)
