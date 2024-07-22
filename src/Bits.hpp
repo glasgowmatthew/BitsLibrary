@@ -81,7 +81,6 @@ namespace Tier0::Bits
 		{
 			subValue = subValue << m_Index;
 			return (value & ~m_Mask) | (subValue & m_Mask);
-
 		}
 
 	private:
@@ -107,44 +106,21 @@ namespace Tier0::Bits
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	template <typename Value>
-	class Index
+	class Index : public Range<Value>
 	{
 	public:
 		Index(uint8_t index) :
-			m_Range(index, 1) {}
-
-		Value GetMask() const
-		{
-			return m_Range.GetMask();
-		}
+			Range<Value>(index, 1) {}
 
 		bool IsSet(Value value) const
 		{
-			return m_Range.IsAllSet(value);
+			return Range<Value>::IsAllSet(value);
 		}
 
 		bool IsClear(Value value) const
 		{
-			return m_Range.IsNoneSet(value);
+			return Range<Value>::IsNoneSet(value);
 		}
-
-		Value Set(Value value) const
-		{
-			return m_Range.Set(value);
-		}
-
-		Value Clear(Value value) const
-		{
-			return m_Range.Clear(value);
-		}
-
-		Value Flip(Value value) const
-		{
-			return m_Range.Flip(value);
-		}
-
-	private:
-		Range<Value> m_Range;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
