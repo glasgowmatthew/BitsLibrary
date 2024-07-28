@@ -81,7 +81,6 @@ namespace Tier0::Bits
 		{
 			subValue = subValue << m_Index;
 			return (value & ~m_Mask) | (subValue & m_Mask);
-
 		}
 
 	private:
