@@ -109,12 +109,19 @@ TEST(Bits, IsAllSet)
 		EXPECT_TRUE(Bits::IsAllSet<Value>(bit, i));
 		EXPECT_FALSE(Bits::IsAllSet<Value>(~bit, i));
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_TRUE(bitIndex.IsSet(bit));
+		EXPECT_FALSE(bitIndex.IsSet(~bit));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBits(i, j);
 			EXPECT_TRUE(Bits::IsAllSet<Value>(bits, i, j));
 			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits, 0, i));
 			EXPECT_TRUE(Bits::IsAllSet<Value>(~bits, i + j, sc_Size - i - j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsAllSet(bits));
 		}
 	}
 }
@@ -128,6 +135,9 @@ TEST(Bits, IsAnySet)
 		for (uint8_t j = 1; i + j < sc_Size; j++)
 		{
 			EXPECT_TRUE(Bits::IsAnySet<Value>(bit, i, j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsAnySet(bit));
 		}
 	}
 }
@@ -140,12 +150,19 @@ TEST(Bits, IsNoneSet)
 		EXPECT_TRUE(Bits::IsNoneSet<Value>(~bit, i));
 		EXPECT_FALSE(Bits::IsNoneSet<Value>(bit, i));
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_TRUE(bitIndex.IsClear(~bit));
+		EXPECT_FALSE(bitIndex.IsClear(bit));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBits(i, j);
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(~bits, i, j));
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits, 0, i));
 			EXPECT_TRUE(Bits::IsNoneSet<Value>(bits, i + j, sc_Size - i - j));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_TRUE(bitRange.IsNoneSet(~bits));
 		}
 	}
 }
@@ -158,11 +175,19 @@ TEST(Bits, Set)
 		EXPECT_EQ(Bits::Set<Value>(0u, i), bit);
 		EXPECT_EQ(Bits::Set<Value>(bit, i), bit);
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Set(0u), bit);
+		EXPECT_EQ(bitIndex.Set(bit), bit);
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBits(i, j);
 			EXPECT_EQ(Bits::Set<Value>(0u, i, j), bits);
 			EXPECT_EQ(Bits::Set<Value>(bits, i, j), bits);
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Set(0u), bits);
+			EXPECT_EQ(bitRange.Set(bits), bits);
 		}
 	}
 }
@@ -175,11 +200,19 @@ TEST(Bits, Clear)
 		EXPECT_EQ(Bits::Clear<Value>(bit, i), 0u);
 		EXPECT_EQ(Bits::Clear<Value>(~bit, i), static_cast<Value>(~bit));
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Clear(bit), 0u);
+		EXPECT_EQ(bitIndex.Clear(~bit), static_cast<Value>(~bit));
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBits(i, j);
 			EXPECT_EQ(Bits::Clear<Value>(bits, i, j), 0u);
 			EXPECT_EQ(Bits::Clear<Value>(~bits, i, j), static_cast<Value>(~bits));
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Clear(bits), 0u);
+			EXPECT_EQ(bitRange.Clear(~bits), static_cast<Value>(~bits));
 		}
 	}
 }
@@ -192,11 +225,19 @@ TEST(Bits, Flip)
 		EXPECT_EQ(Bits::Flip<Value>(0u, i), bit);
 		EXPECT_EQ(Bits::Flip<Value>(bit, i), 0u);
 
+		Bits::Index<Value> bitIndex(i);
+		EXPECT_EQ(bitIndex.Flip(0u), bit);
+		EXPECT_EQ(bitIndex.Flip(bit), 0u);
+
 		for (uint8_t j = 0; i + j < sc_Size; j++)
 		{
 			auto bits = GetBits(i, j);
 			EXPECT_EQ(Bits::Flip<Value>(0u, i, j), bits);
 			EXPECT_EQ(Bits::Flip<Value>(bits, i, j), 0u);
+
+			Bits::Range<Value> bitRange(i, j);
+			EXPECT_EQ(bitRange.Flip(0u), bits);
+			EXPECT_EQ(bitRange.Flip(bits), 0u);
 		}
 	}
 }
@@ -211,6 +252,9 @@ TEST(Bits, GetAt)
 		uint8_t index = std::uniform_int_distribution<>(0, 31)(gen32);
 		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
 		EXPECT_EQ(Bits::GetAt(value, index, size), BitsetGetAt(value, index, size));
+
+		Bits::Range<Value> bitRange(index, size);
+		EXPECT_EQ(bitRange.GetAt(value), BitsetGetAt(value, index, size));
 	}
 }
 
@@ -225,5 +269,8 @@ TEST(Bits, SetAt)
 		uint8_t size = std::uniform_int_distribution<>(1, sc_Size - index)(gen32);
 		Value subValue = gen32();
 		EXPECT_EQ(Bits::SetAt(value, index, size, subValue), SetBitsetAt(value, index, size, subValue));
+
+		Bits::Range<Value> bitRange(index, size);
+		EXPECT_EQ(bitRange.SetAt(value, subValue), SetBitsetAt(value, index, size, subValue));
 	}
 }
