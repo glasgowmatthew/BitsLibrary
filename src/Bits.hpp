@@ -20,11 +20,11 @@ namespace Tier0::Bits
 		return sizeof(Value) * 8;
 	}
 	
-    template <typename Value>
-    constexpr Value Mask(uint8_t index)
-    {
-        return 1u << index;
-    }
+	template <typename Value>
+	constexpr Value Mask(uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).GetMask();
+	}
 
 	template <typename Value>
 	constexpr Value MaskUpTo(uint8_t index)
@@ -35,113 +35,127 @@ namespace Tier0::Bits
 	template <typename Value>
 	constexpr bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
 	{
-		const auto mask = Mask<Value>(index);
-        return (value & mask) == mask;
+		return Range<Value>(index, size).IsAllSet(value);
 	}
 
 	template <typename Value>
 	constexpr bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
 	{
-		const auto mask = Mask<Value>(index);
-        return (value & mask) != 0;
+		return Range<Value>(index, size).IsAnySet(value);
 	}
 
 	template <typename Value>
 	constexpr bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
 	{
-		const auto mask = Mask<Value>(index);
-        return (value & mask) == 0;
+		return Range<Value>(index, size).IsNoneSet(value);
 	}
 
-    template <typename Value>
+	template <typename Value>
 	constexpr Value Clear(Value value, uint8_t index, uint8_t size = 1)
-    {
-		const auto mask = Mask<Value>(index);
-        return value & ~mask;
-    }
+	{
+		return Range<Value>(index, size).Clear(value);
+	}
 
-    template <typename Value>
-    constexpr Value Set(Value value, uint8_t index, uint8_t size = 1)
-    {
-		const auto mask = Mask<Value>(index);
-        return value | mask;
-    }
+	template <typename Value>
+	constexpr Value Set(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).Set(value);
+	}
 
-    template <typename Value>
-    constexpr Value Flip(Value value, uint8_t index, uint8_t size = 1)
-    {
-		const auto mask = Mask<Value>(index);
-        return value ^ mask;
-    }
-	
-    template <typename Value>
-    constexpr Value GetAt(Value value, uint8_t index, uint8_t size)
-    {
-        const auto mask = Mask<Value>(index, size);
-        return (value & mask) >> index;
-    }
+	template <typename Value>
+	constexpr Value Flip(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).Flip(value);
+	}
 
-    template <typename Value>
-    constexpr Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
-    {
-        const auto mask = Mask<Value>(index, size);
-        subValue = subValue << index;
-        return (value & ~mask) | (subValue & mask);
-    }
+	template <typename Value>
+	constexpr Value GetAt(Value value, uint8_t index, uint8_t size)
+	{
+		return Range<Value>(index, size).GetAt(value);
+	}
+
+	template <typename Value>
+	constexpr Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
+	{
+		return Range<Value>(index, size).SetAt(value, subValue);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-    template <typename Value>
-    class Range
-    {
-    public:
-        Range(uint8_t index, uint8_t size) :
-            m_Index(index), m_Size(size) {}
+	template <typename Value>
+	class Range
+	{
+	public:
+		Range(uint8_t index, uint8_t size) :
+			m_Index(index),
+			m_Size(size),
+			m_Mask(CalculateMask(m_Index, m_Size)) {}
 
-        bool IsAllSet(Value value) const
-        {
-            return Bits::IsAllSet<Value>(value, m_Index, m_Size);
-        }
+		Value GetMask() const
+		{
+			return m_Mask;
+		}
 
-        bool IsAnySet(Value value) const
-        {
-            return Bits::IsAnySet<Value>(value, m_Index, m_Size);
-        }
+		bool IsAllSet(Value value) const
+		{
+			return (value & m_Mask) == m_Mask;
+		}
 
-        bool IsNoneSet(Value value) const
-        {
-            return Bits::IsNoneSet<Value>(value, m_Index, m_Size);
-        }
+		bool IsAnySet(Value value) const
+		{
+			return (value & m_Mask) != 0;
+		}
 
-        Value Set(Value value) const
-        {
-            return Bits::Set(value, m_Index, m_Size);
-        }
+		bool IsNoneSet(Value value) const
+		{
+			return (value & m_Mask) == 0;
+		}
 
-        Value Clear(Value value) const
-        {
-            return Bits::Clear(value, m_Index, m_Size);
-        }
+		Value Set(Value value) const
+		{
+			return value | m_Mask;
+		}
 
-        Value Flip(Value value) const
-        {
-            return Bits::Flip(value, m_Index, m_Size);
-        }
+		Value Clear(Value value) const
+		{
+			return value & ~m_Mask;
+		}
 
-        Value GetAt(Value value) const
-        {
-            return Bits::GetAt(value, m_Index, m_Size);
-        }
+		Value Flip(Value value) const
+		{
+			return value ^ m_Mask;
+		}
 
-        Value SetAt(Value value, Value subValue) const
-        {
-            return Bits::SetAt(value, m_Index, m_Size, subValue);
-        }
+		Value GetAt(Value value) const
+		{
+			return (value & m_Mask) >> m_Index;
+		}
 
-    private:
-        uint8_t m_Index;
-        uint8_t m_Size;
-    };
+		Value SetAt(Value value, Value subValue) const
+		{
+			subValue = subValue << m_Index;
+			return (value & ~m_Mask) | (subValue & m_Mask);
+		}
+
+	private:
+		uint8_t m_Index;
+		uint8_t m_Size;
+		Value m_Mask;
+
+		constexpr Value CalculateMask(uint8_t index, uint8_t size = 1)
+		{
+			if (size == 0)
+			{
+				return 0;
+			}
+			Value value = MaskUpTo<Value>(index + size - 1);
+			if (index == 0)
+			{
+				return value;
+			}
+			return value & ~MaskUpTo<Value>(index - 1);
+		}
+	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
