@@ -19,65 +19,11 @@ namespace Tier0::Bits
 	{
 		return sizeof(Value) * 8;
 	}
-	
-	template <typename Value>
-	constexpr Value Mask(uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).GetMask();
-	}
 
 	template <typename Value>
 	constexpr Value MaskUpTo(uint8_t index)
 	{
 		return std::numeric_limits<Value>::max() >> (BitCount<Value>() - 1 - index);
-	}
-
-	template <typename Value>
-	constexpr bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).IsAllSet(value);
-	}
-
-	template <typename Value>
-	constexpr bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).IsAnySet(value);
-	}
-
-	template <typename Value>
-	constexpr bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).IsNoneSet(value);
-	}
-
-	template <typename Value>
-	constexpr Value Clear(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).Clear(value);
-	}
-
-	template <typename Value>
-	constexpr Value Set(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).Set(value);
-	}
-
-	template <typename Value>
-	constexpr Value Flip(Value value, uint8_t index, uint8_t size = 1)
-	{
-		return Range<Value>(index, size).Flip(value);
-	}
-
-	template <typename Value>
-	constexpr Value GetAt(Value value, uint8_t index, uint8_t size)
-	{
-		return Range<Value>(index, size).GetAt(value);
-	}
-
-	template <typename Value>
-	constexpr Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
-	{
-		return Range<Value>(index, size).SetAt(value, subValue);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,4 +122,60 @@ namespace Tier0::Bits
 			return Range<Value>::IsNoneSet(value);
 		}
 	};
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	template <typename Value>
+	constexpr Value Mask(uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).GetMask();
+	}
+
+	template <typename Value>
+	constexpr bool IsAllSet(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).IsAllSet(value);
+	}
+
+	template <typename Value>
+	constexpr bool IsAnySet(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).IsAnySet(value);
+	}
+
+	template <typename Value>
+	constexpr bool IsNoneSet(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).IsNoneSet(value);
+	}
+
+	template <typename Value>
+	constexpr Value Clear(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).Clear(value);
+	}
+
+	template <typename Value>
+	constexpr Value Set(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).Set(value);
+	}
+
+	template <typename Value>
+	constexpr Value Flip(Value value, uint8_t index, uint8_t size = 1)
+	{
+		return Range<Value>(index, size).Flip(value);
+	}
+
+	template <typename Value>
+	constexpr Value GetAt(Value value, uint8_t index, uint8_t size)
+	{
+		return Range<Value>(index, size).GetAt(value);
+	}
+
+	template <typename Value>
+	constexpr Value SetAt(Value value, uint8_t index, uint8_t size, Value subValue)
+	{
+		return Range<Value>(index, size).SetAt(value, subValue);
+	}
 }
